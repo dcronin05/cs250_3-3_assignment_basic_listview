@@ -7,7 +7,6 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 import javax.swing.*;
 import javax.swing.border.*;
-import java.lang.Object.*;
 
 public class TopFiveDestinationList {
 
