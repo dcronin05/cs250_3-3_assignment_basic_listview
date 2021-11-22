@@ -3,8 +3,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Objects;
 import javax.swing.*;
 import javax.swing.border.*;
+import java.lang.Object.*;
 
 public class TopFiveDestinationList {
 
@@ -19,19 +22,26 @@ public class TopFiveDestinationList {
     }
 }
 
-class Destination {
+class Destinations {
+    static final String canadaURL = "https://travel.quarkexpeditions.com/arctic/canadian-arctic/";
+    static final String canadaDesc = "Explore the mountains.";
+    static final ImageIcon canadaImg = new ImageIcon(Objects.requireNonNull(Destinations.class.getResource("/resources/canadian_arctic.png")));
 
-    public enum Google {
-        URI("https://www.google.com");
+    static final String irelandURL = "https://www.gocollette.com/en/tours/europe/ireland/shades-of-ireland";
+    static final String irelandDesc = "Experience Ireland’s charms.";
+    static final ImageIcon irelandImg = new ImageIcon(Objects.requireNonNull(Destinations.class.getResource("/resources/ireland.png")));
 
-        Google(String s) {
-        }
+    static final String spainURL = "https://www.gocollette.com/en/tours/europe/spain/spains-classics";
+    static final String spainDesc = "Embark on a Spanish adventure.";
+    static final ImageIcon spainImg = new ImageIcon(Objects.requireNonNull(Destinations.class.getResource("/resources/spain.png")));
 
-        public Google getUrl() {
-            return URI;
-        }
-    }
+    static final String beachURL = "https://www.imdb.com/title/tt0163978/";
+    static final String beachDesc = "The beach.";
+    static final ImageIcon beachImg = new ImageIcon(Objects.requireNonNull(Destinations.class.getResource("/resources/beach.png")));
 
+    static final String puntaURL = "https://www.cheapcaribbean.com/destinations/dominican-republic/punta-cana-test";
+    static final String puntaDesc = "Punta Cana has got you covered.";
+    static final ImageIcon puntaImg = new ImageIcon(Objects.requireNonNull(Destinations.class.getResource("/resources/punta.png")));
 }
 
 class TopDestinationListFrame extends JFrame {
@@ -46,25 +56,11 @@ class TopDestinationListFrame extends JFrame {
         listModel = new DefaultListModel();
 
         //Make updates to your top 5 list below. Import the new image files to resources directory.
-        addDestinationNameAndPicture("1. Top Destination (short sentence description)",
-                new ImageIcon(getClass().getResource("/resources/TestImage.jpg")),
-                URI.create(new String()));
-
-        addDestinationNameAndPicture("2. 2nd Top Destination",
-                new ImageIcon(getClass().getResource("/resources/TestImage.jpg")),
-                URI.create(new String()));
-
-        addDestinationNameAndPicture("3. 3rd Top Destination",
-                new ImageIcon(getClass().getResource("/resources/TestImage.jpg")),
-                URI.create(new String()));
-
-        addDestinationNameAndPicture("4. 4th Top Destination",
-                new ImageIcon(getClass().getResource("/resources/TestImage.jpg")),
-                URI.create(new String()));
-
-        addDestinationNameAndPicture("5. 5th Top Destination",
-                new ImageIcon(getClass().getResource("/resources/TestImage.jpg")),
-                URI.create(new String()));
+        addDestinationNameAndPicture(Destinations.canadaDesc, Destinations.canadaImg, Destinations.canadaURL);
+        addDestinationNameAndPicture(Destinations.irelandDesc, Destinations.irelandImg, Destinations.irelandURL);
+        addDestinationNameAndPicture(Destinations.spainDesc, Destinations.spainImg, Destinations.spainURL);
+        addDestinationNameAndPicture(Destinations.beachDesc, Destinations.beachImg, Destinations.beachURL);
+        addDestinationNameAndPicture(Destinations.puntaDesc, Destinations.puntaImg, Destinations.puntaURL);
 
         JList list = new JList(listModel);
         JScrollPane scrollPane = new JScrollPane(list);
@@ -79,8 +75,8 @@ class TopDestinationListFrame extends JFrame {
         getContentPane().add(scrollPane, BorderLayout.CENTER);
     }
 
-    private void addDestinationNameAndPicture(String text, Icon icon, URI d) {
-        TextAndIcon tai = new TextAndIcon(text, icon, d);
+    private void addDestinationNameAndPicture(String text, Icon icon, String url) {
+        TextAndIcon tai = new TextAndIcon(text, icon, url);
         listModel.addElement(tai);
     }
 
@@ -92,8 +88,8 @@ class TopDestinationListFrame extends JFrame {
                     public void mouseClicked(MouseEvent e) {
                         final TextAndIcon selectedCell = (TextAndIcon) list.getSelectedValue();
                         try {
-                            Desktop.getDesktop().browse(selectedCell.getUrl());
-                        } catch (IOException ex) {
+                            Desktop.getDesktop().browse(new URI(selectedCell.getUrl()));
+                        } catch (IOException | URISyntaxException ex) {
                             ex.printStackTrace();
                         }
                     }
@@ -130,9 +126,9 @@ class TopDestinationListFrame extends JFrame {
 class TextAndIcon {
     private String text;
     private Icon icon;
-    private URI url;
+    private String url;
 
-    public TextAndIcon(String text, Icon icon, URI url) {
+    public TextAndIcon(String text, Icon icon, String url) {
         this.text = text;
         this.icon = icon;
         this.url = url;
@@ -154,11 +150,11 @@ class TextAndIcon {
         this.icon = icon;
     }
 
-    public URI getUrl() {
+    public String getUrl() {
         return url;
     }
 
-    public void setUrl(URI url) {
+    public void setUrl(String url) {
         this.url = url;
     }
 }
