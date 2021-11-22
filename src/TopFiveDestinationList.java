@@ -1,8 +1,13 @@
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.net.URI;
 import javax.swing.*;
 import javax.swing.border.*;
 
 public class TopFiveDestinationList {
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -14,6 +19,20 @@ public class TopFiveDestinationList {
     }
 }
 
+class Destination {
+
+    public enum Google {
+        URI("https://www.google.com");
+
+        Google(String s) {
+        }
+
+        public Google getUrl() {
+            return URI;
+        }
+    }
+
+}
 
 class TopDestinationListFrame extends JFrame {
     private DefaultListModel listModel;
@@ -26,31 +45,32 @@ class TopDestinationListFrame extends JFrame {
 
         listModel = new DefaultListModel();
 
-
         //Make updates to your top 5 list below. Import the new image files to resources directory.
         addDestinationNameAndPicture("1. Top Destination (short sentence description)",
                 new ImageIcon(getClass().getResource("/resources/TestImage.jpg")),
-                "https://www.google.com"
-        );
+                URI.create(new String()));
+
         addDestinationNameAndPicture("2. 2nd Top Destination",
                 new ImageIcon(getClass().getResource("/resources/TestImage.jpg")),
-                "https://www.google.com"
-        );
+                URI.create(new String()));
+
         addDestinationNameAndPicture("3. 3rd Top Destination",
                 new ImageIcon(getClass().getResource("/resources/TestImage.jpg")),
-                "https://www.google.com"
-        );
+                URI.create(new String()));
+
         addDestinationNameAndPicture("4. 4th Top Destination",
                 new ImageIcon(getClass().getResource("/resources/TestImage.jpg")),
-                "https://www.google.com"
-        );
+                URI.create(new String()));
+
         addDestinationNameAndPicture("5. 5th Top Destination",
                 new ImageIcon(getClass().getResource("/resources/TestImage.jpg")),
-                "https://www.google.com"
-        );
+                URI.create(new String()));
 
         JList list = new JList(listModel);
         JScrollPane scrollPane = new JScrollPane(list);
+
+        // Call selectPackageLister() method to enable package selection.
+        selectPackageListener(list);
 
         TextAndIconListCellRenderer renderer = new TextAndIconListCellRenderer(10);
 
@@ -59,19 +79,60 @@ class TopDestinationListFrame extends JFrame {
         getContentPane().add(scrollPane, BorderLayout.CENTER);
     }
 
-    private void addDestinationNameAndPicture(String text, Icon icon, String url) {
-        TextAndIcon tai = new TextAndIcon(text, icon, url);
+    private void addDestinationNameAndPicture(String text, Icon icon, URI d) {
+        TextAndIcon tai = new TextAndIcon(text, icon, d);
         listModel.addElement(tai);
     }
+
+    // Helper method to implement MouseListener for selecting a package.
+    public static void selectPackageListener(JList list) {
+        list.addMouseListener(
+                new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        final TextAndIcon selectedCell = (TextAndIcon) list.getSelectedValue();
+                        try {
+                            Desktop.getDesktop().browse(selectedCell.getUrl());
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+
+                    // Other MouseListener methods must be Overridden
+                    // unless the class is abstracted. (according to my IDE)
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                }
+        );
+    }
+
+    ;
 }
 
 
 class TextAndIcon {
     private String text;
     private Icon icon;
-    private String url;
+    private URI url;
 
-    public TextAndIcon(String text, Icon icon, String url) {
+    public TextAndIcon(String text, Icon icon, URI url) {
         this.text = text;
         this.icon = icon;
         this.url = url;
@@ -93,11 +154,11 @@ class TextAndIcon {
         this.icon = icon;
     }
 
-    public String getUrl() {
+    public URI getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(URI url) {
         this.url = url;
     }
 }
@@ -137,6 +198,7 @@ class TextAndIconListCellRenderer extends JLabel implements ListCellRenderer {
         // Sets different foreground and background colors for unselected cells
         list.setBackground(Color.black);
         list.setForeground(Color.gray);
+
 
         if (isSelected) {
             setBackground(list.getSelectionBackground());
